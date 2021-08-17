@@ -45,9 +45,14 @@ class ColossusManager(name:String) extends Component(name) with CommandHelper {
   }
 
   override def start: Unit = {
-    init()
     addCommand(CoreColossusCommand.CommandName, classOf[CoreColossusCommand])
     super.start
+  }
+
+  // Start server after all components and services have loaded to prevent starting server before all routes
+  // are registered.
+  override def systemReady(): Unit = {
+    init()
   }
 
   def init(): Unit = {
