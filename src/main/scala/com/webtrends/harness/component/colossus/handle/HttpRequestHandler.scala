@@ -20,7 +20,7 @@ class HttpRequestHandler(context: ServerContext,
 
   // Main routing workhorse, goes through all routes we've currently registered
   override protected def handle: PartialFunction[HttpRequest, Callback[HttpResponse]] = {
-    addRemoteHost.andThen(container.getRouteFunction.andThen[Callback[HttpResponse]]({ colResp =>
+    addRemoteHost().andThen(container.getRouteFunction.andThen[Callback[HttpResponse]]({ colResp =>
       Callback.fromFuture(colResp map { resp =>
         HttpResponse(HttpResponseHead(HttpVersion.`1.1`,
           resp.code, resp.headers + HttpHeader("Content-Type", resp.responseType)),
@@ -50,7 +50,7 @@ class HttpRequestHandler(context: ServerContext,
     }
   }
 
-  def addRemoteHost: PartialFunction[HttpRequest, HttpRequest] = {
+  def addRemoteHost(): PartialFunction[HttpRequest, HttpRequest] = {
     case req =>
       connection.connectionState match {
         case state: AliveState => state

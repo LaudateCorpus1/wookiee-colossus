@@ -16,7 +16,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
   with BeforeAndAfterAll
   with CallbackMatchers
   with CORS
-  with HttpBodyEncoders{
+  with HttpBodyEncoders {
 
   override def afterAll(): Unit = {
     system.terminate()
@@ -29,7 +29,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
     "handle pre-flight requests" in {
 
       val cb = Callback.fromFuture(cors(Settings(allowedMethods = Seq(HttpMethod.Post)), {
-        case req@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
+        case _@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -47,7 +47,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
 
     "use option if allowedMethods empty" in {
       val cb = Callback.fromFuture(cors(Settings(), {
-        case req@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
+        case _@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -69,7 +69,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
         allowedMethods = Seq(HttpMethod.Post),
         accessControlAllowHeaders = AllowedHeaders.Matching(HttpHeaders.ContentType)
       ), {
-        case req@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
+        case _@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -95,7 +95,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
         allowedMethods = Seq(HttpMethod.Post),
         accessControlAllowHeaders = AllowedHeaders.Matching("Content-Type", "Accept")
       ), {
-        case req@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
+        case _@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -120,7 +120,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
         allowedMethods = Seq(HttpMethod.Post),
         accessControlAllowHeaders = AllowedHeaders.Matching("cOnTent-TypE", "AccepT")
       ), {
-        case req@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
+        case _@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -145,7 +145,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
       val cb = Callback.fromFuture(cors(Settings(
         allowedMethods = Seq(HttpMethod.Post),
         accessControlAllowHeaders = AllowedHeaders.`*`), {
-        case req@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
+        case _@Post on Root / "test" => Future.successful(ColossusResponse("should not respond to pre-flight requests"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -165,7 +165,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
 
     "allow inner route to be executed on non-cors requests" in {
       val cb = Callback.fromFuture(cors(Settings(allowedMethods = Seq(HttpMethod.Post)), {
-        case req@Put on Root / "test" => Future.successful(ColossusResponse("executed"))
+        case _@Put on Root / "test" => Future.successful(ColossusResponse("executed"))
       })(
         HttpRequest(Put, "/test", HttpBody.NoBody)
       ))
@@ -180,7 +180,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
 
     "allow inner route to be executed on cors request" in {
       val cb = Callback.fromFuture(cors(Settings(allowedMethods = Seq(HttpMethod.Put)), {
-        case req@Put on Root / "test" => Future.successful(ColossusResponse("executed"))
+        case _@Put on Root / "test" => Future.successful(ColossusResponse("executed"))
       })(
         HttpRequest(Put, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
@@ -196,7 +196,7 @@ class CORSTest extends ColossusSpec(ActorSystem("CORSTest"))
 
     "not respond with 'Access-Control-Allow-Headers' header if allowedHeaders is empty" in {
       val cb = Callback.fromFuture(cors(Settings(allowedMethods = Seq(HttpMethod.Put)), {
-        case req@Put on Root / "test" => Future.successful(ColossusResponse("executed"))
+        case _@Put on Root / "test" => Future.successful(ColossusResponse("executed"))
       })(
         HttpRequest(Options, "/test", HttpBody.NoBody)
           .withHeader(HttpHeader("Origin", "www.example.com"))
