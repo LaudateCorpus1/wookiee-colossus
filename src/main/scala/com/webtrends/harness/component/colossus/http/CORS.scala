@@ -33,7 +33,7 @@ trait CORS extends HttpBodyEncoders {
   : PartialFunction[HttpRequest, Future[ColossusResponse]] = {
     case req =>
       (req.head.method, req.head.headers.firstValue("Origin"), req.head.headers.firstValue("Access-Control-Request-Method")) match {
-        case (HttpMethod.Options, Some(origin), Some(requestMethod)) => // Case 1: pre-flight request
+        case (HttpMethod.Options, Some(origin), Some(_)) => // Case 1: pre-flight request
           Future.successful {
             val allowedMethods = s.allowedMethods match {
               case meth if meth.nonEmpty => meth

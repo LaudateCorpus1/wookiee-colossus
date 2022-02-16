@@ -18,7 +18,7 @@ trait ColossusRouteContainer {
   }
 
   // Call this to add your route handler to the list of handlers
-  def addRoute(commandName: String, route: PartialFunction[HttpRequest, Future[ColossusResponse]]) = {
+  def addRoute(commandName: String, route: PartialFunction[HttpRequest, Future[ColossusResponse]]): Unit = {
     routes synchronized {
       if (!routes.contains(commandName)) {
         Logger.getLogger(getClass).info(s"${getClass.getSimpleName} Creating route for command: $commandName")

@@ -5,7 +5,7 @@ import colossus.service.CallbackExecutor
 import com.webtrends.harness.command.{Command, CommandBean}
 import com.webtrends.harness.component.colossus.{ExternalColossusRouteContainer, InternalColossusRouteContainer}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContextExecutor, Future}
 
 object RouteExposure extends Enumeration {
   type RouteExposure = Value
@@ -14,8 +14,8 @@ object RouteExposure extends Enumeration {
 
 trait ColossusCommand extends Command {
   import RouteExposure._
-  implicit val exec = context.dispatcher
-  implicit val callbackExecutor = CallbackExecutor(context.dispatcher, self)
+  implicit val exec: ExecutionContextExecutor = context.dispatcher
+  implicit val callbackExecutor: CallbackExecutor = CallbackExecutor(context.dispatcher, self)
 
   // Whether this route will be accessible on the internal, external, or both ports
   def routeExposure: RouteExposure

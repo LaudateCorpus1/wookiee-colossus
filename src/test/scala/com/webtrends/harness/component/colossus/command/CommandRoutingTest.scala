@@ -2,13 +2,14 @@ package com.webtrends.harness.component.colossus.command
 
 import colossus.protocols.http.{HttpBody, HttpCodes, HttpRequest}
 import com.webtrends.harness.component.colossus.mock.MockColossusService
+import com.webtrends.harness.service.Service
 import org.scalatest.DoNotDiscover
 
 @DoNotDiscover
 class CommandRoutingTest extends MockColossusService {
   def commands = List(("TestCommand", classOf[TestCommand], List()),
     ("TestCommandBoth", classOf[TestCommandBoth], List("Input")))
-  def wookieeService = None
+  def wookieeService: Option[Map[String, Class[_ <: Service]]] = None
 
   "Command routing" should {
     "handle a put request" in {

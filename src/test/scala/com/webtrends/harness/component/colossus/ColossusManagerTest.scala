@@ -1,11 +1,13 @@
 package com.webtrends.harness.component.colossus
 
 import akka.testkit.TestProbe
+import colossus.core.ServerRef
 import colossus.protocols.http.{HttpCodes, HttpMethod, HttpRequest}
 import com.typesafe.config.ConfigFactory
 import com.webtrends.harness.component.colossus.command.TestCommandBoth
 import com.webtrends.harness.component.colossus.mock.MockColossusService
 import com.webtrends.harness.health.{ComponentState, HealthComponent}
+import com.webtrends.harness.service.Service
 import com.webtrends.harness.service.messages.CheckHealth
 import com.webtrends.harness.service.test.TestHarness
 import org.scalatest.DoNotDiscover
@@ -17,7 +19,7 @@ import scala.util.Success
 @DoNotDiscover
 class ColossusManagerTest extends MockColossusService {
   def commands = List(("TestCommandBoth", classOf[TestCommandBoth], List("Input")))
-  def wookieeService = None
+  def wookieeService: Option[Map[String, Class[_ <: Service]]] = None
 
   "ColossusManager" should {
     "be ready" in {
@@ -92,6 +94,6 @@ class ColossusManagerTest extends MockColossusService {
     }
   }
 
-  override def service = ColossusManager.getInternalServer
-  override def requestTimeout = FiniteDuration(10000, "ms")
+  override def service: ServerRef = ColossusManager.getInternalServer
+  override def requestTimeout: FiniteDuration = FiniteDuration(10000, "ms")
 }
